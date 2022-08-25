@@ -1,0 +1,62 @@
+[
+  {
+    "artistName": "Adele",
+    "albumCount": 5,
+    "songCount": 30,
+    "avatar": "https://suckhoedoisong.qltns.mediacdn.vn/324455921873985536/2022/4/1/photo-1648767741616-16487677418291365136216.jpg"
+  },
+  {
+    "artistName": "Bruno Mars",
+    "albumCount": 6,
+    "songCount": 38,
+    "avatar": "https://avatar-ex-swe.nixcdn.com/singer/avatar/2021/04/13/6/f/9/6/1618286159668.jpg"
+  },
+  {
+    "artistName": "Adam Levine",
+    "albumCount": 2,
+    "songCount": 12,
+    "avatar": "https://znews-photo.zingcdn.me/w660/Uploaded/unvjuas/2021_03_04/adam_levine_hp_gq_14may18_b.jpg"
+  },
+  {
+    "artistName": "Charlie Puth",
+    "albumCount": 4,
+    "songCount": 18,
+    "avatar": "https://35express.org/wp-content/uploads/2022/01/charlie-puth-la-ai-1-35express.jpg"
+  },
+  {
+    "artistName": "Nicki Minaj",
+    "albumCount": 6,
+    "songCount": 35,
+    "avatar": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Nicki_Minaj_MTV_VMAs_4.jpg/250px-Nicki_Minaj_MTV_VMAs_4.jpg"
+  },
+  {
+    "artistName": "Imagine Dragons",
+    "albumCount": 6,
+    "songCount": 40,
+    "avatar": "https://s3.cloud.cmctelecom.vn/tinhte2/2019/11/4827396_tinhte_origins_imagine_dragons_3.jpg"
+  },
+  {
+    "artistName": "Blackpink",
+    "albumCount": 4,
+    "songCount": 29,
+    "avatar": "https://bazaarvietnam.vn/wp-content/uploads/2022/08/blackpink-comeback-2022-1536x1016.jpg"
+  },
+  {
+    "artistName": "Maroon 5",
+    "albumCount": 6,
+    "songCount": 45,
+    "avatar": "https://static2.yan.vn/YanNews/2167221/201801/20180118-095403-mi0002988920.jpg"
+  },
+  {
+    "artistName": "Billie Eilish",
+    "albumCount": 3,
+    "songCount": 24,
+    "avatar": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Billie_Eilish_2019_by_Glenn_Francis_%28cropped%29_2.jpg/250px-Billie_Eilish_2019_by_Glenn_Francis_%28cropped%29_2.jpg"
+  },
+  {
+    "artistName": "Marshmello",
+    "albumCount": 2,
+    "songCount": 10,
+    "avatar": "https://play-lh.googleusercontent.com/Ico9ZTzAGfLKeOJ6XoncgMZmLBvZGQ3Rz8ok2Jgvp0KG5tXKEUS65TUTP_ouxXhDhw=w240-h480-rw"
+  }
+]

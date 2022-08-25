@@ -1,3 +1,3 @@
 export 'color.dart';
-export 'screen_sizes.dart';
+export 'size_config.dart';
 export 'routes.dart';
