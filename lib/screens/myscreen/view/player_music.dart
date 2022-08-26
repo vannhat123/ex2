@@ -1,24 +1,38 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:ex2/const/color.dart';
+import 'package:ex2/screens/myscreen/model/models.dart';
+import 'package:ex2/screens/myscreen/view/volume_config.dart';
 import 'package:flutter/material.dart';
 
 class PlayerMusic extends StatefulWidget {
-  const PlayerMusic({Key? key}) : super(key: key);
+  User user;
+
+  PlayerMusic({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<PlayerMusic> createState() => _HomePageState();
+  State<PlayerMusic> createState() => _HomePageState(user1: user);
 }
 
 class _HomePageState extends State<PlayerMusic> {
-  IconData playBtn = Icons.play_arrow;
-  bool playing = false;
+  _HomePageState({required this.user1});
+
+  IconData playBtn = Icons.pause;
+  bool playing = true;
   double value = 0;
   final player = AudioPlayer();
-  Duration? duration;
+  var duration;
+  late User user1;
 
   void initPlayer() async {
-    await player.setSource(AssetSource("music.mp3"));
+    await player.setSource(AssetSource(user1.music));
     duration = await player.getDuration();
+    await player.resume();
+    player.onPositionChanged.listen(
+      (Duration d) {
+        setState(() {
+          value = d.inSeconds.toDouble();
+        });
+      },
+    );
   }
 
   //init the player
@@ -30,8 +44,7 @@ class _HomePageState extends State<PlayerMusic> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        children: [
+    return Column(children: [
       SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Slider.adaptive(
@@ -45,7 +58,7 @@ class _HomePageState extends State<PlayerMusic> {
           value: value,
           max: 214.0,
           onChanged: (value) {},
-          activeColor: MyColors.SUB_COLOR2,
+          activeColor: Colors.black12,
         ),
       ),
       Container(
@@ -58,11 +71,10 @@ class _HomePageState extends State<PlayerMusic> {
               style: const TextStyle(color: Colors.black),
             ),
             const Expanded(child: SizedBox()),
-             Text(
-              "${duration?.inMinutes}",
-              //    "${duration?.inMinutes} : ${duration!.inSeconds % 60}",
+            Text(
+           "${duration.inMinutes} : ${duration.inSeconds.remainder(60)}",
               style: const TextStyle(color: Colors.black),
-            ),
+            )
           ],
         ),
       ),
@@ -70,18 +82,27 @@ class _HomePageState extends State<PlayerMusic> {
       Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text("The day",style: TextStyle(color: Colors.black,fontSize: 20),),
-          Text("Adele", style: TextStyle(color:MyColors.SUB_COLOR2,fontSize: 12),),
+          Text(
+            user1.title,
+            style: const TextStyle(color: Colors.black, fontSize: 20),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Text(
+            user1.name,
+            style: const TextStyle(color: Colors.black26, fontSize: 12),
+          ),
         ],
       ),
       Container(
-        margin: const EdgeInsets.only(left: 12, right: 12,top: 10),
+        margin: const EdgeInsets.only(left: 12, right: 12, top: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               Icons.favorite_border,
-              color: MyColors.SUB_COLOR2,
+              color: Colors.black26,
               size: 25,
             ),
             const Expanded(child: SizedBox()),
@@ -105,13 +126,6 @@ class _HomePageState extends State<PlayerMusic> {
                 await player.resume();
                 if (!playing) {
                   setState(() {
-                    player.onPositionChanged.listen(
-                      (Duration d) {
-                        setState(() {
-                          value = d.inSeconds.toDouble();
-                        });
-                      },
-                    );
                     playBtn = Icons.pause;
                     playing = true;
                   });
@@ -147,39 +161,48 @@ class _HomePageState extends State<PlayerMusic> {
               ),
             ),
             const Expanded(child: SizedBox()),
-            Icon(
+            const Icon(
               Icons.list,
-              color: MyColors.SUB_COLOR2,
+              color: Colors.black26,
               size: 28,
             ),
           ],
         ),
       ),
       const Expanded(child: SizedBox()),
+      VolumeConfig(),
       Container(
-        margin: const EdgeInsets.only(left: 12, right: 12,bottom: 10),
+        margin: const EdgeInsets.only(left: 12, right: 12, bottom: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
+            const Icon(
               Icons.ios_share,
-              color: MyColors.SUB_COLOR2,
-              size: 28,
+              color: Colors.black12,
+              size: 20,
             ),
-            Icon(
-              Icons.share_outlined,
-              color: MyColors.SUB_COLOR2,
-              size: 28,
+            Container(
+              padding: const EdgeInsets.all(2),
+              color: Colors.black12,
+              child: const Icon(
+                Icons.share_outlined,
+                color: Colors.black,
+                size: 20,
+              ),
             ),
-            Icon(
-              Icons.loop,
-              color: MyColors.SUB_COLOR2,
-              size: 28,
+            Container(
+              padding: const EdgeInsets.all(2),
+              color: Colors.black12,
+              child: const Icon(
+                Icons.loop,
+                color: Colors.black,
+                size: 20,
+              ),
             ),
-            Icon(
+            const Icon(
               Icons.more_horiz_rounded,
-              color: MyColors.SUB_COLOR2,
-              size: 28,
+              color: Colors.black,
+              size: 20,
             ),
           ],
         ),

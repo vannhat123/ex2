@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       ),
      initialRoute: BottomBarScreen.routeName,
       routes: routes,
-    //  home: HomePage()
+    //  home: Home()
     );
   }
 }

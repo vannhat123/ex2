@@ -100,7 +100,6 @@
 //
 //
 
-
 import 'package:ex2/const/consts.dart';
 import 'package:ex2/screens/myscreen/view/my_screen.dart';
 import 'package:flutter/material.dart';
@@ -130,7 +129,7 @@ class _BottomBarScreenSate extends State<BottomBarScreen> {
         selectedFontSize: 10,
         unselectedFontSize: 10,
         backgroundColor: MyColors.PRIMARY_COLOR1,
-        unselectedItemColor:MyColors.SUB_COLOR2.withOpacity(0.5),
+        unselectedItemColor:Colors.black12,
         selectedItemColor: MyColors.SUB_COLOR1,
         items: const [
           BottomNavigationBarItem(

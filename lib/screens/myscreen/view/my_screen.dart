@@ -3,9 +3,10 @@ import 'package:ex2/const/consts.dart';
 import 'package:ex2/screens/myscreen/model/models.dart';
 import 'package:ex2/screens/myscreen/view/player_music.dart';
 import 'package:ex2/screens/myscreen/view/user_list_item.dart';
+import 'package:ex2/widget/loading.dart';
 import 'package:flutter/material.dart';
 
-import '../../../widget/loading.dart';
+import 'form_user_json.dart';
 
 class MyScreen extends StatefulWidget {
   static const routeName = '/my_screen';
@@ -21,24 +22,51 @@ class _MyScreenState extends State<MyScreen> {
   List<User> _user = [];
   String _errorMessage = '';
   late GetData getData;
-  var textName= "Adele-25";
+  var textName = "Adele-25";
   var textTitle = "I miss you";
-  late User userSend = User(name: '', url: '', title: '');
+  late User userSend = User(name: '', url: '', title: '', music: '');
 
-  IconData playBtn = Icons.play_arrow;
   bool playing = false;
   double value = 0;
   final player = AudioPlayer();
-  Duration? duration;
 
-  void initPlayer() async {
-    await player.setSource(AssetSource("music.mp3"));
+  bool viewVisible = false;
+
+  void showWidget() {
+    setState(() {
+      viewVisible = true;
+    });
+  }
+
+  void hideWidget() {
+    setState(() {
+      viewVisible = false;
+    });
+  }
+
+  // void initPlayer(User user) async {
+  //   await player.setSource(AssetSource(user.music));
+  //   player.resume();
+  // }
+
+  IconData playBtn = Icons.pause;
+  var duration;
+
+  void initPlayer(User user) async {
+    await player.setSource(AssetSource(user.music));
     duration = await player.getDuration();
+    await player.resume();
+    player.onPositionChanged.listen(
+      (Duration d) {
+        setState(() {
+          value = d.inSeconds.toDouble();
+        });
+      },
+    );
   }
 
   @override
   void initState() {
-    initPlayer();
     getData = GetData();
     super.initState();
     UserRepository.instance.getNotifi(x: 1).then((responseUser) {
@@ -47,18 +75,16 @@ class _MyScreenState extends State<MyScreen> {
         _isLoading = false;
       });
     }).catchError((errorDetail) {
-      //Bam Camping => this code will run ? navigation lesson
       setState(() {
         _user = [];
         _isLoading = false;
         _errorMessage = errorDetail;
-        //alert(context: context, title: 'Error', content: _errorMessage);
       });
     }); //async
   }
 
-  void showPlayerScreen(User user) {
-    showModalBottomSheet<void>(
+  Future<void> showPlayerScreen(User user) {
+    return showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
         return SafeArea(
@@ -73,11 +99,9 @@ class _MyScreenState extends State<MyScreen> {
                   child: Stack(
                     children: [
                       Image.network(
-                        'https://upload.wikimedia.org/wik'
-                        'ipedia/commons/thumb/d/dd/Le%C3%AFko_au_boi'
-                        's_de_la_Cambre.jpg/220px-Le%C3%AFko_au_bois'
-                        '_de_la_Cambre.jpg',
+                        user.url,
                         width: 500,
+                        height: 700,
                         fit: BoxFit.cover,
                       ),
                       Column(
@@ -100,9 +124,178 @@ class _MyScreenState extends State<MyScreen> {
                 Expanded(
                   flex: 5,
                   child: Container(
-                      color: MyColors.SUB_COLOR2.withOpacity(0.1),
-                      child: PlayerMusic()),
-                ),
+                      color: MyColors.SUB_COLOR2,
+                      child: PlayerMusic(user: user)),
+                  // child: Column(children: [
+                  //   SizedBox(
+                  //     width: MediaQuery.of(context).size.width,
+                  //     child: Slider.adaptive(
+                  //       onChangeEnd: (new_value) async {
+                  //         setState(() {
+                  //           value = new_value;
+                  //         });
+                  //         await player
+                  //             .seek(Duration(seconds: new_value.toInt()));
+                  //       },
+                  //       min: 0.0,
+                  //       value: value,
+                  //       max: 214.0,
+                  //       onChanged: (value) {},
+                  //       activeColor: Colors.black12,
+                  //     ),
+                  //   ),
+                  //   Container(
+                  //     margin: const EdgeInsets.only(left: 12, right: 12),
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       children: [
+                  //         Text(
+                  //           "${(value / 60).floor()}: ${(value % 60).floor()}",
+                  //           style: const TextStyle(color: Colors.black),
+                  //         ),
+                  //         const Expanded(child: SizedBox()),
+                  //         Text(
+                  //           "${duration.inMinutes} : ${duration.inSeconds.remainder(60)}",
+                  //           style: const TextStyle(color: Colors.black),
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   //setting the player controller
+                  //   Column(
+                  //     mainAxisAlignment: MainAxisAlignment.center,
+                  //     children: [
+                  //       Text(
+                  //         user.title,
+                  //         style: const TextStyle(
+                  //             color: Colors.black, fontSize: 20),
+                  //       ),
+                  //       const SizedBox(
+                  //         height: 5,
+                  //       ),
+                  //       Text(
+                  //         user.name,
+                  //         style: const TextStyle(
+                  //             color: Colors.black26, fontSize: 12),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   Container(
+                  //     margin: const EdgeInsets.only(
+                  //         left: 12, right: 12, top: 10),
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.center,
+                  //       children: [
+                  //         const Icon(
+                  //           Icons.favorite_border,
+                  //           color: Colors.black26,
+                  //           size: 25,
+                  //         ),
+                  //         const Expanded(child: SizedBox()),
+                  //         InkWell(
+                  //           onTapDown: (details) {
+                  //             player.setPlaybackRate(0.5);
+                  //           },
+                  //           onTapUp: (details) {
+                  //             player.setPlaybackRate(1);
+                  //           },
+                  //           child: const Center(
+                  //             child: Icon(
+                  //               Icons.fast_rewind_rounded,
+                  //               color: Colors.black,
+                  //               size: 30,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         InkWell(
+                  //           onTap: () async {
+                  //             await player.resume();
+                  //             if (!playing) {
+                  //               setState(() {
+                  //                 playBtn = Icons.pause;
+                  //                 playing = true;
+                  //               });
+                  //             } else {
+                  //               player.pause();
+                  //               setState(() {
+                  //                 playBtn = Icons.play_arrow;
+                  //                 playing = false;
+                  //               });
+                  //             }
+                  //           },
+                  //           child: Center(
+                  //             child: Icon(
+                  //               playBtn,
+                  //               color: Colors.black,
+                  //               size: 35,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         InkWell(
+                  //           onTapDown: (details) {
+                  //             player.setPlaybackRate(2);
+                  //           },
+                  //           onTapUp: (details) {
+                  //             player.setPlaybackRate(1);
+                  //           },
+                  //           child: const Center(
+                  //             child: Icon(
+                  //               Icons.fast_forward_rounded,
+                  //               color: Colors.black,
+                  //               size: 30,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //         const Expanded(child: SizedBox()),
+                  //         const Icon(
+                  //           Icons.list,
+                  //           color: Colors.black26,
+                  //           size: 28,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  //   const Expanded(child: SizedBox()),
+                  //   VolumeConfig(),
+                  //   Container(
+                  //     margin: const EdgeInsets.only(
+                  //         left: 12, right: 12, bottom: 10),
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         const Icon(
+                  //           Icons.ios_share,
+                  //           color: Colors.black12,
+                  //           size: 20,
+                  //         ),
+                  //         Container(
+                  //           padding: const EdgeInsets.all(2),
+                  //           color: Colors.black12,
+                  //           child: const Icon(
+                  //             Icons.share_outlined,
+                  //             color: Colors.black,
+                  //             size: 20,
+                  //           ),
+                  //         ),
+                  //         Container(
+                  //           padding: const EdgeInsets.all(2),
+                  //           color: Colors.black12,
+                  //           child: const Icon(
+                  //             Icons.loop,
+                  //             color: Colors.black,
+                  //             size: 20,
+                  //           ),
+                  //         ),
+                  //         const Icon(
+                  //           Icons.more_horiz_rounded,
+                  //           color: Colors.black,
+                  //           size: 20,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ])),
+                )
               ],
             ),
           ),
@@ -116,318 +309,327 @@ class _MyScreenState extends State<MyScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: MyColors.PRIMARY_COLOR1,
-      body: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            height: 40,
-            color: MyColors.SUB_COLOR2.withOpacity(0.1),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            backgroundColor: MyColors.PRIMARY_COLOR1,
+            body: SingleChildScrollView(
+                child: Stack(
               children: [
-                Icon(
-                  Icons.account_circle_outlined,
-                  color: MyColors.SUB_COLOR1,
-                  size: 28,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      height: 28,
-                      width: 96,
-                      decoration: BoxDecoration(
-                          color: MyColors.SUB_COLOR1,
-                          borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(4),
-                              bottomLeft: Radius.circular(4))),
-                      alignment: Alignment.center,
-                      child: const Text(
-                        "Library",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    Container(
-                      height: 28,
-                      width: 96,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: MyColors.SUB_COLOR1),
-                          borderRadius: const BorderRadius.only(
-                              topRight: Radius.circular(4),
-                              bottomRight: Radius.circular(4))),
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Playlists",
-                        style: TextStyle(color: MyColors.SUB_COLOR1),
-                      ),
-                    ),
-                  ],
-                ),
-                //  const Expanded(child: SizedBox()),
-                Icon(
-                  Icons.search,
-                  color: MyColors.SUB_COLOR1,
-                  size: 28,
-                ),
-              ],
-            ),
-          ),
-          Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Divider(height: 1, color: MyColors.SUB_COLOR2.withOpacity(0.5)),
-                const SizedBox(
-                  height: 4,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 10, right: 10, top: 5, bottom: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Shuffle All",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: MyColors.SUB_COLOR1,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Icon(
-                        Icons.read_more,
-                        color: MyColors.SUB_COLOR1,
-                        size: 30,
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                Divider(height: 1, color: MyColors.SUB_COLOR2.withOpacity(0.5)),
-                Container(
-                  margin: const EdgeInsets.only(left: 10, right: 10),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.87,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(top: 22, bottom: 22),
-                        child: const Text(
-                          "RECENTLY ADDED >",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                                width: 0.3,
+                                color: Colors.grey.withOpacity(0.5)),
+                          ),
+                          color: MyColors.SUB_COLOR2,
+                        ),
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        height: 40,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(
+                              Icons.account_circle_outlined,
+                              color: MyColors.SUB_COLOR1,
+                              size: 28,
+                            ),
+                            Row(
+                              children: [
+                                Container(
+                                  height: 28,
+                                  width: 96,
+                                  decoration: BoxDecoration(
+                                      color: MyColors.SUB_COLOR1,
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(4),
+                                          bottomLeft: Radius.circular(4))),
+                                  alignment: Alignment.center,
+                                  child: const Text(
+                                    "Library",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                Container(
+                                  height: 28,
+                                  width: 96,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: MyColors.SUB_COLOR1),
+                                      borderRadius: const BorderRadius.only(
+                                          topRight: Radius.circular(4),
+                                          bottomRight: Radius.circular(4))),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "Playlists",
+                                    style:
+                                        TextStyle(color: MyColors.SUB_COLOR1),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            //  const Expanded(child: SizedBox()),
+                            Icon(
+                              Icons.search,
+                              color: MyColors.SUB_COLOR1,
+                              size: 28,
+                            ),
+                          ],
                         ),
                       ),
-                      SizedBox(
-                          height: 150,
-                          child: Expanded(
-                              child: _isLoading == true
-                                  ? Loading(title: 'Loading user list')
-                                  : ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: _user.length,
-                                      itemBuilder: (context, index) {
-                                        User user = _user[index];
-                                        return InkWell(
-                                          child: Column(
-                                            children: [
-                                              UserListItem(
-                                                user: user,
-                                                index: index,
-                                              ),
-                                            ],
-                                          ),
-                                          onTap: () {
-                                            setState(() {
-                                              textTitle = user.title;
-                                              textName =user.name;
-                                              userSend = user;
-                                            });
-                                          },
-                                        );
-                                      }))),
-                      Row(
-                        //  crossAxisAlignment: CrossAxisAlignment.center,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: Divider(
-                                height: 2,
-                                color: MyColors.SUB_COLOR2.withOpacity(0.5)),
+                          const SizedBox(
+                            height: 4,
                           ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 5, right: 5),
-                            child: Text(
-                              "Artists",
-                              style: TextStyle(
-                                  color: MyColors.SUB_COLOR1, fontSize: 28),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 5, bottom: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Shuffle All",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: MyColors.SUB_COLOR1,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Icon(
+                                  Icons.read_more,
+                                  color: MyColors.SUB_COLOR1,
+                                  size: 30,
+                                )
+                              ],
                             ),
                           ),
-                          Expanded(
-                            child: Divider(
-                                height: 2,
-                                color: MyColors.SUB_COLOR2.withOpacity(0.5)),
-                          )
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Divider(
+                              height: 1, color: Colors.grey.withOpacity(0.5)),
+                          Container(
+                            margin: const EdgeInsets.only(left: 10, right: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                      top: 22, bottom: 22),
+                                  child: const Text(
+                                    "RECENTLY ADDED >",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                  ),
+                                ),
+                                SizedBox(
+                                    height: 150,
+                                    child: Expanded(
+                                        child: _isLoading == true
+                                            ? Loading(
+                                                title: 'Loading user list')
+                                            : ListView.builder(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                itemCount: _user.length,
+                                                itemBuilder: (context, index) {
+                                                  User user = _user[index];
+                                                  return InkWell(
+                                                    child: Column(
+                                                      children: [
+                                                        UserListItem(
+                                                          user: user,
+                                                          index: index,
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    onTap: () {
+                                                      setState(() {
+                                                        playBtn = Icons.pause;
+                                                        showWidget();
+                                                        initPlayer(user);
+                                                        textTitle = user.title;
+                                                        textName = user.name;
+                                                        userSend = user;
+                                                      });
+                                                    },
+                                                  );
+                                                }))),
+                                Row(
+                                  //  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Divider(
+                                          height: 0.5,
+                                          color: Colors.grey.withOpacity(0.5)),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                          left: 5, right: 5),
+                                      child: Text(
+                                        "Artists",
+                                        style: TextStyle(
+                                            color: MyColors.SUB_COLOR1,
+                                            fontSize: 28),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Divider(
+                                          height: 0.5,
+                                          color: Colors.grey.withOpacity(0.5)),
+                                    ),
+                                  ],
+                                ),
+                                const Text(
+                                  "A",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(
+                                    height: 170,
+                                    child: Expanded(
+                                      child: FutureBuilder(
+                                        future: getData.getData(),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            var parseData =
+                                                snapshot.data as List<UserJson>;
+                                            return ListView.builder(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8),
+                                              itemCount: parseData.length,
+                                              itemBuilder:
+                                                  (BuildContext context,
+                                                      int index) {
+                                                var userIndex =
+                                                    parseData[index];
+                                                return FormUserJson(
+                                                  userJson: userIndex,
+                                                );
+                                              },
+                                            );
+                                          } else {
+                                            return const SizedBox();
+                                          }
+                                        },
+                                      ),
+                                    )),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                      const Text(
-                        "A",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Container(
-                          height: 133,
-                          child: FutureBuilder(
-                            future: getData.getData(),
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                var parseData = snapshot.data as List<UserJson>;
-                                return ListView.builder(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  itemCount: parseData.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    var userIndex = parseData[index];
-                                    return FormUserJson(
-                                      userJson: userIndex,
-                                    );
-                                  },
-                                );
-                              } else {
-                                return const SizedBox();
-                              }
-                            },
-                          )),
                     ],
                   ),
                 ),
+                Visibility(
+                  maintainSize: true,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  visible: viewVisible,
+                  child: AnimatedOpacity(
+                      opacity: viewVisible ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 700),
+                      child: Expanded(
+                        child: Container(
+                            margin: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0.79,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                    width: 0.2,
+                                    color: Colors.grey.withOpacity(0.5)),
+                                bottom: BorderSide(
+                                    width: 0.3,
+                                    color: Colors.grey.withOpacity(0.5)),
+                              ),
+                              color: MyColors.SUB_COLOR2,
+                            ),
+                            height: 50,
+                            child: Column(children: [
+                              Expanded(
+                                  child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    showPlayerScreen(userSend);
+                                  });
+                                },
+                                child: Container(
+                                  color: const Color.fromRGBO(246, 246, 246, 1),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      IconButton(
+                                        onPressed: () async {
+                                          if (!playing) {
+                                            setState(() {
+                                              playBtn = Icons.pause;
+                                              playing = true;
+                                            });
+                                          } else {
+                                            player.pause();
+                                            setState(() {
+                                              playBtn = Icons.play_arrow;
+                                              playing = false;
+                                            });
+                                          }
+                                        },
+                                        icon: Icon(
+                                          playBtn,
+                                          color: MyColors.SUB_COLOR1,
+                                        ),
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            textTitle,
+                                            style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12),
+                                          ),
+                                          Text(
+                                            textName,
+                                            style: const TextStyle(
+                                                color: Colors.black26,
+                                                fontSize: 10),
+                                          )
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.more_horiz_rounded,
+                                            color: MyColors.SUB_COLOR1,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )),
+                            ])),
+                      )),
+                )
               ],
-            ),
-          ),
-          Divider(height: 1, color: MyColors.SUB_COLOR2.withOpacity(0.5)),
-          Expanded(
-              child: InkWell(
-            onTap: () => showPlayerScreen(userSend),
-            child: Container(
-              color: MyColors.SUB_COLOR2.withOpacity(0.1),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Icon(
-                    Icons.play_arrow,
-                    color: MyColors.SUB_COLOR1,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                       Text(
-                        textTitle,
-                        style: TextStyle(color: Colors.black, fontSize: 12),
-                      ),
-                      Text(
-                        textName,
-                        style:
-                            TextStyle(color: MyColors.SUB_COLOR2, fontSize: 10),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.more_horiz_rounded,
-                        color: MyColors.SUB_COLOR1,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      )
-                    ],
-                  )
-                ],
-              ),
-            ),
-          )),
-          Divider(height: 1, color: MyColors.SUB_COLOR2.withOpacity(0.5)),
-        ],
-      ),
-    ));
-  }
-}
-
-class FormUserJson extends StatelessWidget {
-   FormUserJson({Key? key, required this.userJson,}) : super(key: key);
-  final UserJson userJson;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 13),
-      child: InkWell(
-        onTap:(){
-        },
-          child: Column(
-        children: [
-          Row(
-            children: [
-              SizedBox(
-                height: 50,
-                width: 50,
-                child: Image.network(
-                  userJson.avatar!,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(
-                width: 4,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    userJson.artistName!,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  RichText(
-                    text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(
-                            text: '${userJson.albumCount} Album • ',
-                            style: TextStyle(
-                                color: MyColors.SUB_COLOR2, fontSize: 11)),
-                        TextSpan(
-                            text: '${userJson.songCount} Song',
-                            style: TextStyle(
-                                color: MyColors.SUB_COLOR2, fontSize: 11)),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              const Expanded(child: SizedBox()),
-              Icon(
-                Icons.more_horiz_rounded,
-                color: MyColors.SUB_COLOR1,
-                size: 25,
-              ),
-            ],
-          ),
-          Divider(
-            thickness: 0.4,
-            color: MyColors.SUB_COLOR2,
-          )
-        ],
-      )),
-    );
+            ))));
   }
 }
