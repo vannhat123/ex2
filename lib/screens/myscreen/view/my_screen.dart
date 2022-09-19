@@ -126,175 +126,6 @@ class _MyScreenState extends State<MyScreen> {
                   child: Container(
                       color: MyColors.SUB_COLOR2,
                       child: PlayerMusic(user: user)),
-                  // child: Column(children: [
-                  //   SizedBox(
-                  //     width: MediaQuery.of(context).size.width,
-                  //     child: Slider.adaptive(
-                  //       onChangeEnd: (new_value) async {
-                  //         setState(() {
-                  //           value = new_value;
-                  //         });
-                  //         await player
-                  //             .seek(Duration(seconds: new_value.toInt()));
-                  //       },
-                  //       min: 0.0,
-                  //       value: value,
-                  //       max: 214.0,
-                  //       onChanged: (value) {},
-                  //       activeColor: Colors.black12,
-                  //     ),
-                  //   ),
-                  //   Container(
-                  //     margin: const EdgeInsets.only(left: 12, right: 12),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.center,
-                  //       children: [
-                  //         Text(
-                  //           "${(value / 60).floor()}: ${(value % 60).floor()}",
-                  //           style: const TextStyle(color: Colors.black),
-                  //         ),
-                  //         const Expanded(child: SizedBox()),
-                  //         Text(
-                  //           "${duration.inMinutes} : ${duration.inSeconds.remainder(60)}",
-                  //           style: const TextStyle(color: Colors.black),
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  //   //setting the player controller
-                  //   Column(
-                  //     mainAxisAlignment: MainAxisAlignment.center,
-                  //     children: [
-                  //       Text(
-                  //         user.title,
-                  //         style: const TextStyle(
-                  //             color: Colors.black, fontSize: 20),
-                  //       ),
-                  //       const SizedBox(
-                  //         height: 5,
-                  //       ),
-                  //       Text(
-                  //         user.name,
-                  //         style: const TextStyle(
-                  //             color: Colors.black26, fontSize: 12),
-                  //       ),
-                  //     ],
-                  //   ),
-                  //   Container(
-                  //     margin: const EdgeInsets.only(
-                  //         left: 12, right: 12, top: 10),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.center,
-                  //       children: [
-                  //         const Icon(
-                  //           Icons.favorite_border,
-                  //           color: Colors.black26,
-                  //           size: 25,
-                  //         ),
-                  //         const Expanded(child: SizedBox()),
-                  //         InkWell(
-                  //           onTapDown: (details) {
-                  //             player.setPlaybackRate(0.5);
-                  //           },
-                  //           onTapUp: (details) {
-                  //             player.setPlaybackRate(1);
-                  //           },
-                  //           child: const Center(
-                  //             child: Icon(
-                  //               Icons.fast_rewind_rounded,
-                  //               color: Colors.black,
-                  //               size: 30,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //         InkWell(
-                  //           onTap: () async {
-                  //             await player.resume();
-                  //             if (!playing) {
-                  //               setState(() {
-                  //                 playBtn = Icons.pause;
-                  //                 playing = true;
-                  //               });
-                  //             } else {
-                  //               player.pause();
-                  //               setState(() {
-                  //                 playBtn = Icons.play_arrow;
-                  //                 playing = false;
-                  //               });
-                  //             }
-                  //           },
-                  //           child: Center(
-                  //             child: Icon(
-                  //               playBtn,
-                  //               color: Colors.black,
-                  //               size: 35,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //         InkWell(
-                  //           onTapDown: (details) {
-                  //             player.setPlaybackRate(2);
-                  //           },
-                  //           onTapUp: (details) {
-                  //             player.setPlaybackRate(1);
-                  //           },
-                  //           child: const Center(
-                  //             child: Icon(
-                  //               Icons.fast_forward_rounded,
-                  //               color: Colors.black,
-                  //               size: 30,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //         const Expanded(child: SizedBox()),
-                  //         const Icon(
-                  //           Icons.list,
-                  //           color: Colors.black26,
-                  //           size: 28,
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  //   const Expanded(child: SizedBox()),
-                  //   VolumeConfig(),
-                  //   Container(
-                  //     margin: const EdgeInsets.only(
-                  //         left: 12, right: 12, bottom: 10),
-                  //     child: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         const Icon(
-                  //           Icons.ios_share,
-                  //           color: Colors.black12,
-                  //           size: 20,
-                  //         ),
-                  //         Container(
-                  //           padding: const EdgeInsets.all(2),
-                  //           color: Colors.black12,
-                  //           child: const Icon(
-                  //             Icons.share_outlined,
-                  //             color: Colors.black,
-                  //             size: 20,
-                  //           ),
-                  //         ),
-                  //         Container(
-                  //           padding: const EdgeInsets.all(2),
-                  //           color: Colors.black12,
-                  //           child: const Icon(
-                  //             Icons.loop,
-                  //             color: Colors.black,
-                  //             size: 20,
-                  //           ),
-                  //         ),
-                  //         const Icon(
-                  //           Icons.more_horiz_rounded,
-                  //           color: Colors.black,
-                  //           size: 20,
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ])),
                 )
               ],
             ),
@@ -314,7 +145,7 @@ class _MyScreenState extends State<MyScreen> {
                 child: Stack(
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.87,
+                  height: MediaQuery.of(context).size.height,
                   child: Column(
                     children: [
                       Container(
@@ -494,40 +325,42 @@ class _MyScreenState extends State<MyScreen> {
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                SizedBox(
-                                    height: 170,
-                                    child: Expanded(
-                                      child: FutureBuilder(
-                                        future: getData.getData(),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            var parseData =
-                                                snapshot.data as List<UserJson>;
-                                            return ListView.builder(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8),
-                                              itemCount: parseData.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                var userIndex =
-                                                    parseData[index];
-                                                return FormUserJson(
-                                                  userJson: userIndex,
-                                                );
-                                              },
-                                            );
-                                          } else {
-                                            return const SizedBox();
-                                          }
-                                        },
-                                      ),
-                                    )),
+
                               ],
                             ),
                           ),
                         ],
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: FutureBuilder(
+                            future: getData.getData(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                var parseData =
+                                snapshot.data as List<UserJson>;
+                                return ListView.builder(
+                                  padding:
+                                  const EdgeInsets.symmetric(
+                                      vertical: 8),
+                                  itemCount: parseData.length,
+                                  itemBuilder:
+                                      (BuildContext context,
+                                      int index) {
+                                    var userIndex =
+                                    parseData[index];
+                                    return FormUserJson(
+                                      userJson: userIndex,
+                                    );
+                                  },
+                                );
+                              } else {
+                                return const SizedBox();
+                              }
+                            },
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -540,93 +373,96 @@ class _MyScreenState extends State<MyScreen> {
                   child: AnimatedOpacity(
                       opacity: viewVisible ? 1.0 : 0.0,
                       duration: const Duration(milliseconds: 700),
-                      child: Expanded(
-                        child: Container(
-                            margin: EdgeInsets.only(
-                              top: MediaQuery.of(context).size.height * 0.79,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                    width: 0.2,
-                                    color: Colors.grey.withOpacity(0.5)),
-                                bottom: BorderSide(
-                                    width: 0.3,
-                                    color: Colors.grey.withOpacity(0.5)),
-                              ),
-                              color: MyColors.SUB_COLOR2,
-                            ),
-                            height: 50,
-                            child: Column(children: [
-                              Expanded(
-                                  child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    showPlayerScreen(userSend);
-                                  });
-                                },
-                                child: Container(
-                                  color: const Color.fromRGBO(246, 246, 246, 1),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () async {
-                                          if (!playing) {
-                                            setState(() {
-                                              playBtn = Icons.pause;
-                                              playing = true;
-                                            });
-                                          } else {
-                                            player.pause();
-                                            setState(() {
-                                              playBtn = Icons.play_arrow;
-                                              playing = false;
-                                            });
-                                          }
-                                        },
-                                        icon: Icon(
-                                          playBtn,
-                                          color: MyColors.SUB_COLOR1,
-                                        ),
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            textTitle,
-                                            style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12),
-                                          ),
-                                          Text(
-                                            textName,
-                                            style: const TextStyle(
-                                                color: Colors.black26,
-                                                fontSize: 10),
-                                          )
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.more_horiz_rounded,
-                                            color: MyColors.SUB_COLOR1,
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )),
-                            ])),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height*0.9,
+                        child: Column(
+                         children: [
+                           const Expanded(child: SizedBox(),),
+                           Container(
+                               decoration: BoxDecoration(
+                                 border: Border(
+                                   top: BorderSide(
+                                       width: 0.2,
+                                       color: Colors.grey.withOpacity(0.5)),
+                                   bottom: BorderSide(
+                                       width: 0.3,
+                                       color: Colors.grey.withOpacity(0.5)),
+                                 ),
+                                 color: MyColors.SUB_COLOR2,
+                               ),
+                               height: 50,
+                               child: Column(children: [
+                                 Expanded(
+                                     child: InkWell(
+                                       onTap: () {
+                                         setState(() {
+                                           showPlayerScreen(userSend);
+                                         });
+                                       },
+                                       child: Container(
+                                         color: const Color.fromRGBO(246, 246, 246, 1),
+                                         child: Row(
+                                           crossAxisAlignment:
+                                           CrossAxisAlignment.center,
+                                           mainAxisAlignment:
+                                           MainAxisAlignment.spaceBetween,
+                                           children: [
+                                             IconButton(
+                                               onPressed: () async {
+                                                 if (!playing) {
+                                                   setState(() {
+                                                     playBtn = Icons.pause;
+                                                     playing = true;
+                                                   });
+                                                 } else {
+                                                   player.pause();
+                                                   setState(() {
+                                                     playBtn = Icons.play_arrow;
+                                                     playing = false;
+                                                   });
+                                                 }
+                                               },
+                                               icon: Icon(
+                                                 playBtn,
+                                                 color: MyColors.SUB_COLOR1,
+                                               ),
+                                             ),
+                                             Column(
+                                               mainAxisAlignment:
+                                               MainAxisAlignment.center,
+                                               children: [
+                                                 Text(
+                                                   textTitle,
+                                                   style: const TextStyle(
+                                                       color: Colors.black,
+                                                       fontSize: 12),
+                                                 ),
+                                                 Text(
+                                                   textName,
+                                                   style: const TextStyle(
+                                                       color: Colors.black26,
+                                                       fontSize: 10),
+                                                 )
+                                               ],
+                                             ),
+                                             Row(
+                                               children: [
+                                                 Icon(
+                                                   Icons.more_horiz_rounded,
+                                                   color: MyColors.SUB_COLOR1,
+                                                 ),
+                                                 const SizedBox(
+                                                   width: 10,
+                                                 )
+                                               ],
+                                             )
+                                           ],
+                                         ),
+                                       ),
+                                     )),
+                               ])),
+                         ],
+                        ),
                       )),
                 )
               ],
